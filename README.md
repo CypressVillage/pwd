@@ -22,13 +22,13 @@
 
 - 操作界面：（windows terminal下）背景图片是windows terminal实现的，与程序无瓜
 
-  <img src="pictures.assets/image-20211125234510692.png" alt="image-20211125234510692" style="zoom: 50%;" />
+  <img src="pictures.assets/image-20211125234510692.png" alt="image-20211125234510692" style="zoom:33%;" />
 
-  <img src="pictures.assets/image-20211125234847203.png" alt="image-20211125234847203" style="zoom:50%;" />
+  <img src="pictures.assets/image-20211125234847203.png" alt="image-20211125234847203" style="zoom:33%;" />
 
-  <img src="pictures.assets/image-20211125234931148.png" alt="image-20211125234931148" style="zoom:50%;" />
+  <img src="pictures.assets/image-20211125234931148.png" alt="image-20211125234931148" style="zoom:33%;" />
 
-  <img src="pictures.assets/image-20211125235127859.png" alt="image-20211125235127859" style="zoom:50%;" />
+  <img src="pictures.assets/image-20211125235127859.png" alt="image-20211125235127859" style="zoom:33%;" />
   
   - 因为本人太菜。。。怎么也搞不好delete的部分，就，就，就删掉了delete的功能（逃），delete功能改为把账号名更换为“todelete”。。。想真正实现删除有以下3种方案：
     1. 鼓励作者好好学习掌握更多知识并催更作者（成功率0.01%）
