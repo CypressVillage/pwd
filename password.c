@@ -3,12 +3,17 @@
 #include <string.h>
 #include "password.h"
 
+void show_operation( void ){
+  printf("å¯†ç åˆ—è¡¨: 1\tæŸ¥æ‰¾å¯†ç : 2\tæ–°å»ºå¯†ç : 3\nä¿®æ”¹å¯†ç : 4\tåˆ é™¤å¯†ç : 5\t");
+  printf("æŸ¥çœ‹æ“ä½œ: 8\nä¿å­˜æ›´æ”¹: 9\té€€å‡ºç³»ç»Ÿ: 0\n");
+}
+
 void show( Password *p, int i ){
-  printf("ÕËºÅ%d£º%s\n",i+1,p->zhanghao);
-    printf("ÕË»§£º%s\n",p->zhanghu);
-    printf("êÇ³Æ£º%s\n",p->name);
-    printf("ÃÜÂë£º%s\n",p->pwd);
-    printf("¿ì½İ·½Ê½£º%s\n\n",p->lnk);
+  printf("è´¦å·%dï¼š%s\n",i+1,p->zhanghao);
+    printf("è´¦æˆ·ï¼š%s\n",p->zhanghu);
+    printf("æ˜µç§°ï¼š%s\n",p->name);
+    printf("å¯†ç ï¼š%s\n",p->pwd);
+    printf("å¿«æ·æ–¹å¼ï¼š%s\n\n",p->lnk);
 }
 
 void list_all( Password *p, int nums ){
@@ -20,22 +25,22 @@ void list_all( Password *p, int nums ){
 
 void store_password( Password *p ,int nums ){
   
-  printf("ÇëÊäÈëÕËºÅ:");
+  printf("è¯·è¾“å…¥è´¦å·:");
   scanf("%s",&((p+nums)->zhanghao));
 
-  printf("ÇëÊäÈëÕË»§:");
+  printf("è¯·è¾“å…¥è´¦æˆ·:");
   scanf("%s",&((p+nums)->zhanghu));
 
-  printf("ÇëÊäÈëêÇ³Æ:");
+  printf("è¯·è¾“å…¥æ˜µç§°:");
   scanf("%s",&((p+nums)->name));
 
-  printf("ÇëÊäÈëÃÜÂë:");
+  printf("è¯·è¾“å…¥å¯†ç :");
   scanf("%s",&((p+nums)->pwd));
 
-  printf("ÇëÊäÈë¿ì½İÊı×Ö:");
+  printf("è¯·è¾“å…¥å¿«æ·æ•°å­—:");
   scanf("%s",&((p+nums)->lnk));
 
-  printf("´´½¨Íê³É£¬¼ÇµÃ±£´æÅ¶~\n\n");
+  printf("åˆ›å»ºå®Œæˆï¼Œè®°å¾—ä¿å­˜å“¦~\n\n");
 }
 
 void search_by_lnk( char *input, Password *p, int nums ){
@@ -48,9 +53,9 @@ void search_by_lnk( char *input, Password *p, int nums ){
     p++;
   }
   if(flag){
-    printf("¹²ÕÒµ½%dÌõ½á¹û\n\n",flag);
+    printf("å…±æ‰¾åˆ°%dæ¡ç»“æœ\n\n",flag);
   }else{
-    printf("Î´ÕÒµ½½á¹û\n\n");
+    printf("æœªæ‰¾åˆ°ç»“æœ\n\n");
   }
 }
 
@@ -64,9 +69,9 @@ void search_by_zhanghao( char *input, Password *p, int nums ){
     p++;
   }
   if(flag){
-    printf("¹²ÕÒµ½%dÌõ½á¹û\n\n",flag);
+    printf("å…±æ‰¾åˆ°%dæ¡ç»“æœ\n\n",flag);
   }else{
-    printf("Î´ÕÒµ½½á¹û\n\n");
+    printf("æœªæ‰¾åˆ°ç»“æœ\n\n");
   }
 }
 
@@ -80,9 +85,9 @@ void search_by_zhanghu( char *input, Password *p, int nums ){
     p++;
   }
   if(flag){
-    printf("¹²ÕÒµ½%dÌõ½á¹û\n\n",flag);
+    printf("å…±æ‰¾åˆ°%dæ¡ç»“æœ\n\n",flag);
   }else{
-    printf("Î´ÕÒµ½½á¹û\n\n");
+    printf("æœªæ‰¾åˆ°ç»“æœ\n\n");
   }
 }
 
@@ -96,19 +101,19 @@ void search_by_name( char *input, Password *p, int nums ){
     p++;
   }
   if(flag){
-    printf("¹²ÕÒµ½%dÌõ½á¹û\n\n",flag);
+    printf("å…±æ‰¾åˆ°%dæ¡ç»“æœ\n\n",flag);
   }else{
-    printf("Î´ÕÒµ½½á¹û\n\n");
+    printf("æœªæ‰¾åˆ°ç»“æœ\n\n");
   }
 }
 
 void search( Password *p, int nums ){
-  printf("ÇëÑ¡ÔñËÑË÷ÀàĞÍ:\n");
-  printf("¿ì½İËÑË÷: 1\tÕËºÅËÑË÷: 2\nÕË»§ËÑË÷: 3\têÇ³ÆËÑË÷: 4\n");
+  printf("è¯·é€‰æ‹©æœç´¢ç±»å‹:\n");
+  printf("å¿«æ·æœç´¢: 1\tè´¦å·æœç´¢: 2\nè´¦æˆ·æœç´¢: 3\tæ˜µç§°æœç´¢: 4\n");
 
   int search_mode;
   scanf("%d",&search_mode);
-  printf("ÇëÊäÈëÊı¾İ:");
+  printf("è¯·è¾“å…¥æ•°æ®:");
   char input[30];
   scanf("%s",input);
   printf("\n");
@@ -118,17 +123,17 @@ void search( Password *p, int nums ){
     case 2: { search_by_zhanghao( input, p, nums ); break; }
     case 3: { search_by_zhanghu( input, p, nums ); break; }
     case 4: { search_by_name( input, p, nums ); break; }
-    default: printf("ËÑË÷Ä£Ê½²»Æ¥Åä\n\n");
+    default: printf("æœç´¢æ¨¡å¼ä¸åŒ¹é…\n\n");
   }
 }
 
 void change( Password *p, int nums ){
 change_1:
-  printf("ÇëÑ¡ÔñÏëÒªĞŞ¸ÄµÄÕËºÅ\n");
+  printf("è¯·é€‰æ‹©æƒ³è¦ä¿®æ”¹çš„è´¦å·\n");
   char input[30];
   scanf("%s",input);
-  int flag = 0;//ÊÇ·ñÕÒµ½
-  Password *q;//´¢´æp
+  int flag = 0;//æ˜¯å¦æ‰¾åˆ°
+  Password *q;//å‚¨å­˜p
   for( int i=0; i<nums; ++i ){
     if( !strcmp(input,(char*)&(p->zhanghao)) ){
       show( p, i );
@@ -139,37 +144,37 @@ change_1:
   }
 
   if(!flag){
-    printf("Î´ÕÒµ½½á¹û\n\n");
+    printf("æœªæ‰¾åˆ°ç»“æœ\n\n");
     goto change_1;
   }
 
-  printf("ÇëÑ¡ÔñÒªĞŞ¸ÄµÄÄÚÈİ:\n");
-  printf("ÕËºÅ: 1\tÕË»§: 2\nêÇ³Æ: 3\tÃÜÂë: 4\n¿ì½İ·½Ê½: 5\n");
+  printf("è¯·é€‰æ‹©è¦ä¿®æ”¹çš„å†…å®¹:\n");
+  printf("è´¦å·: 1\tè´¦æˆ·: 2\næ˜µç§°: 3\tå¯†ç : 4\nå¿«æ·æ–¹å¼: 5\n");
 
   int mode;
 
 select_mode:
 
   scanf("%d",&mode);
-  printf("ÇëÊäÈëĞŞ¸ÄºóµÄÄÚÈİ:\n");
+  printf("è¯·è¾“å…¥ä¿®æ”¹åçš„å†…å®¹:\n");
   switch( mode ){
     case 1: { scanf("%s",&(q->zhanghao)); break; }
     case 2: { scanf("%s",&(q->zhanghu)); break; }
     case 3: { scanf("%s",&(q->name)); break; }
     case 4: { scanf("%s",&(q->pwd)); break; }
     case 5: { scanf("%s",&(q->lnk)); break; }
-    default: { printf("·Ç·¨ÊäÈë!\nÇëÑ¡ÔñÒªĞŞ¸ÄµÄÄÚÈİ:\n"); goto select_mode; }
+    default: { printf("éæ³•è¾“å…¥!\nè¯·é€‰æ‹©è¦ä¿®æ”¹çš„å†…å®¹:\n"); goto select_mode; }
   }
-  printf("ĞŞ¸ÄÍê±Ï£¬¼ÇµÃ±£´æÅ¶~\n\n");
+  printf("ä¿®æ”¹å®Œæ¯•ï¼Œè®°å¾—ä¿å­˜å“¦~\n\n");
 }
 
 void my_delete( Password *p, int nums ){
   del_1:
-  printf("ÇëÑ¡ÔñÏëÒªÉ¾³ıµÄÕËºÅ\n");
+  printf("è¯·é€‰æ‹©æƒ³è¦åˆ é™¤çš„è´¦å·\n");
   char input[30];
   scanf("%s",input);
-  int flag = 0;//ÊÇ·ñÕÒµ½
-  Password *q;//´¢´æp
+  int flag = 0;//æ˜¯å¦æ‰¾åˆ°
+  Password *q;//å‚¨å­˜p
   for( int i=0; i<nums; ++i ){
     if( !strcmp(input,(char*)&(p->zhanghao)) ){
       show( p, i );
@@ -180,10 +185,29 @@ void my_delete( Password *p, int nums ){
   }
 
   if(!flag){
-    printf("Î´ÕÒµ½½á¹û\n\n");
+    printf("æœªæ‰¾åˆ°ç»“æœ\n\n");
     goto del_1;
   }
   strcpy(q->zhanghao,"todelete");
 
-  printf("É¾³ıÍê±Ï£¬¼ÇµÃ±£´æÅ¶~\n\n");
+  printf("åˆ é™¤å®Œæ¯•ï¼Œè®°å¾—ä¿å­˜å“¦~\n\n");
 }
+
+// void password_panel( Password *p_pwd ){
+//   while(1){
+//         printf("-------------------------------------------------\nè¯·é€‰æ‹©æ“ä½œ:\n");
+//         int mode;
+//         scanf("%d",&mode);    
+//         switch( mode ){
+//             case 0: { printf("ç¨‹åºç»“æŸ\n"); /*system("pause");*/ exit(EXIT_SUCCESS); }
+//             case 1: { list_all( my_password, nums ); break; }
+//             case 2: { search( my_password, nums ); break;}
+//             case 3: { store_password( my_password, nums ); nums++; break; }
+//             case 4: { change( my_password, nums ); break; }
+//             case 5: { my_delete( my_password, nums ); break; }
+//             case 8: { show_operation(); break; }
+//             case 9: { goto save; break; }
+//             default:{ printf("æ–°åŠŸèƒ½å¼€å‘ä¸­~(åæ­£å°±æ˜¯ä½ éæ³•è¾“å…¥äº†hhh)\n\n"); }
+//         } 
+//     }
+// }
