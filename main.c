@@ -5,85 +5,85 @@
 #define DEBUG 0
 /*-------------------------------------------------------------------------------------------*/
 int main(){
-  Password my_password[100];//my_pwdÊÇÒ»¸östruct passwordÀàĞÍµÄÊı×é 100Îª×î´óÃÜÂëÊı£¬¿ÉÒÔ×ÔĞĞ¸ü¸Ä
-  Password *ppwd = &my_password[0];
-  //¶ÁÈ¡ÎÄ¼şÀïµÄÄÚÈİ
+    Password my_password[100];//my_pwdæ˜¯ä¸€ä¸ªstruct passwordç±»å‹çš„æ•°ç»„ 100ä¸ºæœ€å¤§å¯†ç æ•°ï¼Œå¯ä»¥è‡ªè¡Œæ›´æ”¹
+    Password *ppwd = &my_password[0];
+    char path[100] = "D://zbc//biancheng//Environment//my_environment//";
+    char file_name[50] = "pwd_data.txt";
 
-  //´´½¨Ö¸ÏòÎÄ¼şµÄÖ¸Õë
-  FILE *file;
-  if( (file=fopen( "D://zbc//biancheng//Environment//my_environment//pwd_data.txt", "r+" )) == NULL ){
-    printf("Î´ÕÒµ½ÎÄ¼şpwd_data.txt,Çë×ÔĞĞ´´½¨\n");
-    system("pause");
-    exit(EXIT_FAILURE);
-  }
-  //°´ĞĞ¶ÁÈëÎÄ¼şµ½structÊı×é
-  
-  int line_num = 1;//ĞĞºÅ
-  
-  while( !feof(file) ){ 
-    switch( line_num % 5 ){
-      case 1: {fscanf( file, "%s", ppwd->zhanghao );  break;}
-      case 2: {fscanf( file, "%s", ppwd->zhanghu ); break;}
-      case 3: {fscanf( file, "%s", ppwd->name ); break;}
-      case 4: {fscanf( file, "%s", ppwd->pwd ); break;}
-      case 0: {fscanf( file, "%s", ppwd->lnk ); ppwd ++; break;}
+    // select file
+    printf("please select file\n");
+    scanf("%s",file_name);
+
+    //è¯»å–æ–‡ä»¶é‡Œçš„å†…å®¹
+
+    //åˆ›å»ºæŒ‡å‘æ–‡ä»¶çš„æŒ‡é’ˆ
+    FILE *file;
+    if( (file=fopen( strcat( path, file_name ), "r+" )) == NULL ){
+      printf("æœªæ‰¾åˆ°æ–‡ä»¶%s,è¯·è‡ªè¡Œåˆ›å»º\n", file_name);
+      system("pause");
+      exit(EXIT_FAILURE);
     }
-    line_num ++;
-  }
-  int nums = line_num/5;//ÒÑÓĞÃÜÂëÌõÊı
-  fclose( file );//¹Ø±ÕÎÄ¼ş
-  ppwd = my_password;//Ö¸ÏòÊı×éÍ·²¿
+    //æŒ‰è¡Œè¯»å…¥æ–‡ä»¶åˆ°structæ•°ç»„
 
+    int line_num = 1;//è¡Œå·
+
+    while( !feof(file) ){ 
+        switch( line_num % 5 ){
+            case 1: {fscanf( file, "%s", ppwd->zhanghao );  break;}
+            case 2: {fscanf( file, "%s", ppwd->zhanghu ); break;}
+            case 3: {fscanf( file, "%s", ppwd->name ); break;}
+            case 4: {fscanf( file, "%s", ppwd->pwd ); break;}
+            case 0: {fscanf( file, "%s", ppwd->lnk ); ppwd ++; break;}
+        }
+        line_num ++;
+    }
+    int nums = line_num/5;//å·²æœ‰å¯†ç æ¡æ•°
+    fclose( file );//å…³é—­æ–‡ä»¶
+    ppwd = my_password;//æŒ‡å‘æ•°ç»„å¤´éƒ¨   
 /*init words-----------------------------------------------------------------------*/
-  printf("»¶Ó­Ê¹ÓÃ @pwd@ ÃÜÂëÏµÍ³~\n");
-  printf("ÃÜÂëÁĞ±í: 1\t²éÕÒÃÜÂë: 2\tĞÂ½¨ÃÜÂë: 3\nĞŞ¸ÄÃÜÂë: 4\tÉ¾³ıÃÜÂë: 5\t");
-  printf("²é¿´²Ù×÷: 8\n±£´æ¸ü¸Ä: 9\tÍË³öÏµÍ³: 0\n");
-
+    printf("æ¬¢è¿ä½¿ç”¨ @pwd@ å¯†ç ç³»ç»Ÿ~\n");
+    show_operation();
 back:
-  while(1){
-    printf("-------------------------------------------------\nÇëÑ¡Ôñ²Ù×÷:\n");
-    int mode;
-    scanf("%d",&mode);
-
-    switch( mode ){
-      case 0: { printf("³ÌĞò½áÊø\n"); /*system("pause");*/ exit(EXIT_SUCCESS); }
-      case 1: { list_all( my_password, nums ); break; }
-      case 2: { search( my_password, nums ); break;}
-      case 3: { store_password( my_password, nums ); nums++; break; }
-      case 4: { change( my_password, nums ); break; }
-      case 5: { my_delete( my_password, nums ); break; }
-      case 8: { printf("ÃÜÂëÁĞ±í: 1\t²éÕÒÃÜÂë: 2\tĞÂ½¨ÃÜÂë: 3\nĞŞ¸ÄÃÜÂë: 4\tÉ¾³ıÃÜÂë: 5\t");
-                printf("²é¿´²Ù×÷: 8\n±£´æ¸ü¸Ä: 9\tÍË³öÏµÍ³: 0\n"); break; }
-      case 9: { goto save; break; }
-      default:{ printf("ĞÂ¹¦ÄÜ¿ª·¢ÖĞ~(·´Õı¾ÍÊÇÄã·Ç·¨ÊäÈëÁËhhh)\n\n"); }
+    while(1){
+        printf("-------------------------------------------------\nè¯·é€‰æ‹©æ“ä½œ:\n");
+        int mode;
+        scanf("%d",&mode);    
+        switch( mode ){
+            case 0: { printf("ç¨‹åºç»“æŸ\n"); /*system("pause");*/ exit(EXIT_SUCCESS); }
+            case 1: { list_all( my_password, nums ); break; }
+            case 2: { search( my_password, nums ); break;}
+            case 3: { store_password( my_password, nums ); nums++; break; }
+            case 4: { change( my_password, nums ); break; }
+            case 5: { my_delete( my_password, nums ); break; }
+            case 8: { show_operation(); break; }
+            case 9: { goto save; break; }
+            default:{ printf("æ–°åŠŸèƒ½å¼€å‘ä¸­~(åæ­£å°±æ˜¯ä½ éæ³•è¾“å…¥äº†hhh)\n\n"); }
+        } 
     }
 
-  }
-
-save://ÎÄ¼şÖ¸Õë×÷º¯Êı²ÎÊıÕæ²»»áÓÃ±ğÂîÁË±ğÂîÁË
-  file=fopen( "D://zbc//biancheng//Environment//my_environment//pwd_data.txt", "r+" );
-  ppwd = my_password;//Ö¸ÏòÊı×éÍ·²¿
-  line_num = 1;
-  while( *(ppwd->zhanghao)!='\0' ){ 
-    // ÕâÊÇÃ»ÓĞÊµÏÖµÄdelete²¿·Ö¡£¡£¡£²Ë²Ë²Ë
-    // if( !strcmp("todelete",(char*)&(ppwd->zhanghao)) ){
-    //   printf("zhixing");
-    //   ppwd ++;
-    //   // line_num ++;
-    //   continue;
-    // }
-    switch( line_num % 5 ){
-      case 1: {fprintf( file, "%s\n", ppwd->zhanghao ); break;}
-      case 2: {fprintf( file, "%s\n", ppwd->zhanghu ); break;}
-      case 3: {fprintf( file, "%s\n", ppwd->name ); break;}
-      case 4: {fprintf( file, "%s\n", ppwd->pwd ); break;}
-      case 0: {fprintf( file, "%s\n", ppwd->lnk ); ppwd ++; break;}
+save://æ–‡ä»¶æŒ‡é’ˆä½œå‡½æ•°å‚æ•°çœŸä¸ä¼šç”¨åˆ«éª‚äº†åˆ«éª‚äº†
+    file=fopen( "D://zbc//biancheng//Environment//my_environment//pwd_data.txt", "w" );
+    ppwd = my_password;//æŒ‡å‘æ•°ç»„å¤´éƒ¨
+    line_num = 1;
+    while( *(ppwd->zhanghao)!='\0' ){ 
+        // è¿™æ˜¯æ²¡æœ‰å®ç°çš„deleteéƒ¨åˆ†ã€‚ã€‚ã€‚èœèœèœ
+        // if( !strcmp("todelete",(char*)&(ppwd->zhanghao)) ){
+        //   printf("zhixing");
+        //   ppwd ++;
+        //   // line_num ++;
+        //   continue;
+        // }
+        switch( line_num % 5 ){
+          case 1: {fprintf( file, "%s\n", ppwd->zhanghao ); break;}
+          case 2: {fprintf( file, "%s\n", ppwd->zhanghu ); break;}
+          case 3: {fprintf( file, "%s\n", ppwd->name ); break;}
+          case 4: {fprintf( file, "%s\n", ppwd->pwd ); break;}
+          case 0: {fprintf( file, "%s\n", ppwd->lnk ); ppwd ++; break;}
+        }
+        line_num ++;
     }
-    line_num ++;
-  }
-  fclose( file );
-  printf("±£´æ³É¹¦\n\n");
-  goto back;
-
-  return 0;
+    fclose( file );
+    printf("ä¿å­˜æˆåŠŸ\n\n");
+    goto back;  
+    return 0;
 }
