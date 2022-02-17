@@ -101,7 +101,7 @@ Password *read_file( FILE *file ){
             case 2: {fscanf( file, "%s", ppwd->zhanghu ); break;}
             case 3: {fscanf( file, "%s", ppwd->name ); break;}
             case 4: {fscanf( file, "%s", ppwd->pwd ); break;}
-            case 0: {fscanf( file, "%s", ppwd->lnk ); break;}
+            case 0: {fscanf( file, "%s", ppwd->lnk ); ppwd++; break;}
         }
         line_num ++;
     }
