@@ -2,19 +2,29 @@
 #include <stdlib.h>
 #include <string.h>
 #include "password.h"
+#include "fileoperation.h"
+
+extern int file_num;
+
+void split_line( void ){
+  printf("-------------------------------------------------\n");
+}
+
 
 void show_operation( void ){
   printf("密码列表: 1\t查找密码: 2\t新建密码: 3\n修改密码: 4\t删除密码: 5\t");
-  printf("查看操作: 8\n保存更改: 9\t退出系统: 0\n");
+  printf("保存更改: 8\n查看操作: 9\t退出系统: 0\t返回上级: -\n");
 }
 
+
 void show( Password *p, int i ){
-  printf("账号%d：%s\n",i+1,p->zhanghao);
-    printf("账户：%s\n",p->zhanghu);
-    printf("昵称：%s\n",p->name);
-    printf("密码：%s\n",p->pwd);
-    printf("快捷方式：%s\n\n",p->lnk);
+  printf("账号%d:%s\n",i+1,p->zhanghao);
+    printf("账户:%s\n",p->zhanghu);
+    printf("昵称:%s\n",p->name);
+    printf("密码:%s\n",p->pwd);
+    printf("快捷方式:%s\n\n",p->lnk);
 }
+
 
 void list_all( Password *p, int nums ){
   for( int i=0; i<nums; ++i ){
@@ -23,7 +33,8 @@ void list_all( Password *p, int nums ){
   }
 }
 
-void store_password( Password *p ,int nums ){
+
+void new_password( Password *p ,int nums ){
   
   printf("请输入账号:");
   scanf("%s",&((p+nums)->zhanghao));
@@ -43,6 +54,7 @@ void store_password( Password *p ,int nums ){
   printf("创建完成，记得保存哦~\n\n");
 }
 
+
 void search_by_lnk( char *input, Password *p, int nums ){
   int flag = 0;
   for( int i=0; i<nums; ++i ){
@@ -58,6 +70,7 @@ void search_by_lnk( char *input, Password *p, int nums ){
     printf("未找到结果\n\n");
   }
 }
+
 
 void search_by_zhanghao( char *input, Password *p, int nums ){
   int flag = 0;
@@ -75,6 +88,7 @@ void search_by_zhanghao( char *input, Password *p, int nums ){
   }
 }
 
+
 void search_by_zhanghu( char *input, Password *p, int nums ){
   int flag = 0;
   for( int i=0; i<nums; ++i ){
@@ -91,6 +105,7 @@ void search_by_zhanghu( char *input, Password *p, int nums ){
   }
 }
 
+
 void search_by_name( char *input, Password *p, int nums ){
   int flag = 0;
   for( int i=0; i<nums; ++i ){
@@ -106,6 +121,7 @@ void search_by_name( char *input, Password *p, int nums ){
     printf("未找到结果\n\n");
   }
 }
+
 
 void search( Password *p, int nums ){
   printf("请选择搜索类型:\n");
@@ -126,6 +142,7 @@ void search( Password *p, int nums ){
     default: printf("搜索模式不匹配\n\n");
   }
 }
+
 
 void change( Password *p, int nums ){
 change_1:
@@ -168,6 +185,7 @@ select_mode:
   printf("修改完毕，记得保存哦~\n\n");
 }
 
+
 void my_delete( Password *p, int nums ){
   del_1:
   printf("请选择想要删除的账号\n");
@@ -193,21 +211,29 @@ void my_delete( Password *p, int nums ){
   printf("删除完毕，记得保存哦~\n\n");
 }
 
-// void password_panel( Password *p_pwd ){
-//   while(1){
-//         printf("-------------------------------------------------\n请选择操作:\n");
-//         int mode;
-//         scanf("%d",&mode);    
-//         switch( mode ){
-//             case 0: { printf("程序结束\n"); /*system("pause");*/ exit(EXIT_SUCCESS); }
-//             case 1: { list_all( my_password, nums ); break; }
-//             case 2: { search( my_password, nums ); break;}
-//             case 3: { store_password( my_password, nums ); nums++; break; }
-//             case 4: { change( my_password, nums ); break; }
-//             case 5: { my_delete( my_password, nums ); break; }
-//             case 8: { show_operation(); break; }
-//             case 9: { goto save; break; }
-//             default:{ printf("新功能开发中~(反正就是你非法输入了hhh)\n\n"); }
-//         } 
-//     }
-// }
+
+void password_panel( Password *p_pwd ){
+  show_operation();
+
+  Password *my_password = p_pwd;
+  char mode = 0;
+  while(1){
+    split_line();
+    printf("请选择操作:\n");
+
+    scanf("\n");
+    scanf("%c",&mode);
+    switch( mode ){
+      case '0': { /*printf("程序结束\n"); system("pause");*/ my_exit(); }
+      case '1': { list_all( my_password, file_num ); break; }
+      case '2': { search( my_password, file_num ); break;}
+      case '3': { new_password( my_password, file_num ); file_num++; break; }
+      case '4': { change( my_password, file_num ); break; }
+      case '5': { my_delete( my_password, file_num ); break; }
+      case '8': { save_file( my_password ); break; }
+      case '9': { show_operation(); break; }
+      case '-': { FILE *file = NULL; file_panel( file ); break; }
+      default:{ printf("新功能开发中~(反正就是你非法输入了hhh)\n\n"); }
+    } 
+  }
+}
