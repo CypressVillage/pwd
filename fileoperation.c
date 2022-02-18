@@ -9,7 +9,7 @@
 /*
 这里不加static会有奇怪的bug，dbg函数会打印奇怪的数字
 */
-static char file_path[MAX_FILE_PATH_LEN] = "D://zbc//biancheng//Environment//my_environment//";
+static char file_path[MAX_FILE_PATH_LEN] = "D://zbc//biancheng//Environment//my_environment//pwd//";
 static char file_name[100] = "pwd_data";
 int file_num;
 
@@ -25,7 +25,8 @@ void show_file_operation( void ){
     
     printf("文件列表: 1\t");
     printf("选择文件: 2\t");
-    printf("删除文件: 5\n");
+    printf("新建文件: 3\n");
+    printf("删除文件: 5\t");
     printf("查看操作: 9\t");
     printf("退出系统: 0\n");
 
@@ -47,6 +48,27 @@ void my_exit( void ){
 void welcome( void ){
     // printf("welcom to use @pwd@~\n\n");
     printf("欢迎使用 @pwd@ 密码系统~\n\n");
+}
+
+
+void list_file( void ){
+    system("for &i in *.txt do echo &i");
+}
+
+
+FILE *create_file( FILE *file ){
+    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
+    strcpy( f_path, file_path );
+
+    printf("请输入文件名:");
+    scanf("%s",file_name);
+
+    char *total_path = malloc( 200 * sizeof(char) );
+    total_path = (char*)strcat( strcat( f_path, file_name ), ".txt");
+
+    file=fopen( total_path , "w+" );
+    printf("创建成功!\n");
+    return file;
 }
 
 
@@ -123,6 +145,13 @@ void save_file( Password *ppwd ){
     int f_num = file_num, line_num = 1;
     while( f_num ){
 
+        // delete
+        if( !strcmp( ppwd->zhanghao, "todelete" ) ){
+            ppwd ++;
+            f_num --;
+            continue;
+        }
+
         switch( line_num % 5 ){
           case 1: {fprintf( file, "%s\n", ppwd->zhanghao ); break;}
           case 2: {fprintf( file, "%s\n", ppwd->zhanghu ); break;}
@@ -159,6 +188,11 @@ FILE *file_panel( FILE *file ){
                 Password *p = read_file(file);
                 password_panel( p );
                 break;
+            }
+            case 3: {
+                file = create_file(file);
+                Password *p = read_file(file);
+                password_panel( p );
             }
             case 5: {break;}
             case 9: {show_file_operation(); break;}
