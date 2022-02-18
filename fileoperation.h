@@ -12,7 +12,9 @@
     void welcome( void );
     void show_file_operation( void );
     void my_exit( void );
+    void list_file( void );
 
+    FILE *create_file( FILE *file );
     FILE *select_file( FILE *file );
     Password *read_file( FILE *file );
     void save_file( Password *ppwd );
