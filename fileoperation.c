@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <io.h>
 #include "fileoperation.h"
 #include "password.h"
 // #include "config.h"
@@ -52,7 +53,28 @@ void welcome( void ){
 
 
 void list_file( void ){
-    system("for &i in *.txt do echo &i");
+    printf("\n");
+
+    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
+    strcpy( f_path, file_path );
+    f_path = strcat( f_path, "*.txt" );
+    // system("for &i in (*.txt) do echo &i");
+    __int64 Handle;
+    int txt_num = 1;
+    struct __finddata64_t FileInfo;
+    if( (Handle = _findfirst64( f_path, &FileInfo)) == -1L ){
+        printf("没有找到文件\n");
+    }else{
+        printf("%s\n", FileInfo.name);
+        while( _findnext64(Handle, &FileInfo) == 0 ){
+            txt_num ++;
+            printf("%s\n", FileInfo.name);
+        }
+        _findclose(Handle);
+        printf("\n共找到%d条结果\n", txt_num);
+    }
+
+    getchar();
 }
 
 
@@ -69,6 +91,32 @@ FILE *create_file( FILE *file ){
     file=fopen( total_path , "w+" );
     printf("创建成功!\n");
     return file;
+}
+
+
+void remove_file( void ){
+    // printf("please input the filename youwant to remove:\n");
+    printf("请选择要删除的文件:\n");
+    scanf("%s", file_name);
+
+    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
+    strcpy( f_path, file_path );
+
+    char *total_path = malloc( 200 * sizeof(char) );
+    total_path = (char*)strcat( strcat( f_path, file_name ), ".txt");
+
+    if( !remove(total_path) ){
+        // printf("file removed!\n");
+        printf("文件已删除!\n");
+    }else{
+        // printf("file not exit\n");
+        printf("文件不存在\n");
+    }
+}
+
+
+void rename_file( void ){
+//////////////////////////////////////////////////////////////////////////
 }
 
 
@@ -180,7 +228,7 @@ FILE *file_panel( FILE *file ){
 
         scanf("%d", &mode);
         switch ( mode ){
-            case 1: { break;}
+            case 1: { list_file(); break;}
             case 2: {
                 do{
                     file = select_file( file );
@@ -194,7 +242,7 @@ FILE *file_panel( FILE *file ){
                 Password *p = read_file(file);
                 password_panel( p );
             }
-            case 5: {break;}
+            case 5: {remove_file(); break;}
             case 9: {show_file_operation(); break;}
             case 0: {my_exit(); break;}
             default:{printf("undefined mode\n"); break;}
