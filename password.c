@@ -3,26 +3,65 @@
 #include <string.h>
 #include "password.h"
 #include "fileoperation.h"
+#include "config.h"
 
 extern int file_num;
 
 void split_line( void ){
-  printf("-------------------------------------------------\n");
+  switch(SplitLineStyle){
+    case 0: printf("-------------------------------------------------\n"); break;
+    case -1: printf("1234567890123456789012345678901234567890123456789012345678901234567890\n"); break;
+  }
 }
 
 
 void show_operation( void ){
-  printf("密码列表: 1\t查找密码: 2\t新建密码: 3\n修改密码: 4\t删除密码: 5\t");
-  printf("保存更改: 8\n查看操作: 9\t退出系统: 0\t返回上级: -\n");
+  switch(Language){
+    case 0:{
+      printf("密码列表: 1\t查找密码: 2\t新建密码: 3\n修改密码: 4\t删除密码: 5\t");
+      printf("保存更改: 8\n查看操作: 9\t退出系统: 0\t返回上级: -\n");
+      break;
+    }
+    case 1:{
+      printf("%-20s","1: list password");
+      printf("%-20s","2: search password");
+      printf("%-20s","3: create password");
+      printf("\n");
+      printf("%-20s","4: change password");
+      printf("%-20s","5: delete password");
+      printf("%-20s","8: save password");
+      printf("\n");
+      printf("%-20s","9: show operation");
+      printf("%-20s","0: exit");
+      printf("%-20s","-: return");
+      printf("\n");
+      break;
+    }
+  }
 }
 
 
+
 void show( Password *p, int i ){
-  printf("账号%d:%s\n",i+1,p->zhanghao);
-    printf("账户:%s\n",p->zhanghu);
-    printf("昵称:%s\n",p->name);
-    printf("密码:%s\n",p->pwd);
-    printf("快捷方式:%s\n\n",p->lnk);
+  switch(Language){
+    case 0:{
+      printf("账号%d:%s\n",i+1,p->zhanghao);
+      printf("账户:%s\n",p->zhanghu);
+      printf("昵称:%s\n",p->name);
+      printf("密码:%s\n",p->pwd);
+      printf("快捷方式:%s\n\n",p->lnk);
+      break;
+    }
+    case 1:{
+      printf("account %d:%s\n",i+1,p->zhanghao);
+      printf("account number:%s\n",p->zhanghu);
+      printf("name:%s\n",p->name);
+      printf("password:%s\n",p->pwd);
+      printf("lnk:%s\n\n",p->lnk);
+      break;
+    }
+  }
+
 }
 
 
@@ -219,6 +258,7 @@ void password_panel( Password *p_pwd ){
   char mode = 0;
   while(1){
     split_line();
+    // switch(Language)
     printf("请选择操作:\n");
 
     scanf("\n");
