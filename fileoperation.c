@@ -4,14 +4,11 @@
 #include <io.h>
 #include "fileoperation.h"
 #include "password.h"
-// #include "config.h"
+#include "config.h"
 
 
-/*
-这里不加static会有奇怪的bug，dbg函数会打印奇怪的数字
-*/
-static char file_path[MAX_FILE_PATH_LEN] = "D://zbc//biancheng//Environment//my_environment//pwd//";
-static char file_name[100] = "pwd_data";
+extern char file_path[MAX_FILE_PATH_LEN];
+extern char file_name[100];
 int file_num;
 
 
@@ -24,18 +21,30 @@ void dbg( char* tosay ){
 
 void show_file_operation( void ){
     
-    printf("文件列表: 1\t");
-    printf("选择文件: 2\t");
-    printf("新建文件: 3\n");
-    printf("删除文件: 5\t");
-    printf("查看操作: 9\t");
-    printf("退出系统: 0\n");
+    switch(Language){
+        case 0:{
+            printf("文件列表: 1\t");
+            printf("选择文件: 2\t");
+            printf("新建文件: 3\n");
+            printf("删除文件: 5\t");
+            printf("查看操作: 9\t");
+            printf("退出系统: 0\n");
+            break;
+        }
+        case 1:{
+            printf("%-20s","1:list file");
+            printf("%-20s","2:select file");
+            printf("%-20s","3:delete file");
+            printf("\n");
+            printf("%-20s","5:new file");
+            printf("%-20s","9:show operation");
+            printf("%-20s","0:exit");
+            printf("\n");
+            break;
+        }
+    }
 
-    // printf("1:list file\n");
-    // printf("2:select file\n");
-    // printf("3:delete file\n");
-    // printf("9:show file operation\n");
-    // printf("0:exit\n");
+
 }
 
 
@@ -47,8 +56,10 @@ void my_exit( void ){
 
 
 void welcome( void ){
-    // printf("welcom to use @pwd@~\n\n");
-    printf("欢迎使用 @pwd@ 密码系统~\n\n");
+    switch (Language){
+        case 0: printf("欢迎使用 @pwd@ 密码系统~\n\n"); break;
+        case 1: printf("welcom to use @pwd@~\n\n"); break;
+    }
 }
 
 
