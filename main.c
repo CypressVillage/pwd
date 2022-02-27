@@ -1,17 +1,19 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include "password.h"
 #include "fileoperation.h"
+#include "config.h"
 #define DEBUG 0
 
 
-// gcc main.c password.c password.h fileoperation.h fileoperation.c
+// gcc main.c password.c password.h fileoperation.h fileoperation.c config.h config.c
 int main(){
     system("chcp 65001 > nul");
     system("title pwd");
+
+    ConfigList *cp = read_config();
+    set_config(cp);
+
     welcome();
-    
     FILE *file = NULL;
     file_panel(file);
  
