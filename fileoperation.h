@@ -1,11 +1,8 @@
 #ifndef FILEOPERATION_H
 #define FILEOPERATION_H
 
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include "password.h"
 
-    #define MAX_FILE_PATH_LEN 100
+    #include "password.h"
 
 
     void dbg( char* tosay );
