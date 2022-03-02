@@ -5,13 +5,12 @@
 #include "fileoperation.h"
 #include "config.h"
 
-extern int file_num;
+extern int password_num;
 
 void split_line( void ){
-  switch(SplitLineStyle){
-    case 0: printf("-------------------------------------------------\n"); break;
-    case -1: printf("1234567890123456789012345678901234567890123456789012345678901234567890\n"); break;
-  }
+  if(!strcmp(SplitLineStyle, "---")) printf("----------------------------------------------------------------------\n");
+  if(!strcmp(SplitLineStyle, "num")) printf("1234567890123456789012345678901234567890123456789012345678901234567890\n");
+  if(!strcmp(SplitLineStyle, "nul")) printf("\n");
 }
 
 
@@ -41,20 +40,19 @@ void show_operation( void ){
 }
 
 
-
 void show( Password *p, int i ){
   switch(Language){
     case 0:{
-      printf("账号%d:%s\n",i+1,p->zhanghao);
-      printf("账户:%s\n",p->zhanghu);
+      printf("账号%d:%s\n",i+1,p->account);
+      printf("账户:%s\n",p->account_num);
       printf("昵称:%s\n",p->name);
       printf("密码:%s\n",p->pwd);
       printf("快捷方式:%s\n\n",p->lnk);
       break;
     }
     case 1:{
-      printf("account %d:%s\n",i+1,p->zhanghao);
-      printf("account number:%s\n",p->zhanghu);
+      printf("account %d:%s\n",i+1,p->account);
+      printf("account number:%s\n",p->account_num);
       printf("name:%s\n",p->name);
       printf("password:%s\n",p->pwd);
       printf("lnk:%s\n\n",p->lnk);
@@ -65,175 +63,115 @@ void show( Password *p, int i ){
 }
 
 
-void list_all( Password *p, int nums ){
-  for( int i=0; i<nums; ++i ){
+void list_all( Password *p ){
+  for( int i=0; i<password_num; ++i ){
     show( p, i );
     p++;
   }
 }
 
 
-void new_password( Password *p ,int nums ){
+void new_password( Password *p ){
   
   printf("请输入账号:");
-  scanf("%s",&((p+nums)->zhanghao));
+  scanf("%s",&((p+password_num)->account));
 
   printf("请输入账户:");
-  scanf("%s",&((p+nums)->zhanghu));
+  scanf("%s",&((p+password_num)->account_num));
 
   printf("请输入昵称:");
-  scanf("%s",&((p+nums)->name));
+  scanf("%s",&((p+password_num)->name));
 
   printf("请输入密码:");
-  scanf("%s",&((p+nums)->pwd));
+  scanf("%s",&((p+password_num)->pwd));
 
   printf("请输入快捷数字:");
-  scanf("%s",&((p+nums)->lnk));
+  scanf("%s",&((p+password_num)->lnk));
 
   printf("创建完成，记得保存哦~\n\n");
 }
 
 
-void search_by_lnk( char *input, Password *p, int nums ){
-  int flag = 0;
-  for( int i=0; i<nums; ++i ){
-    if( !strcmp(input,(char*)&(p->lnk)) ){
-      show( p, i );
-      flag ++;
+void search( Password *p ){
+    printf("请选择搜索类型:\n");
+    printf("快捷搜索: 1\t账号搜索: 2\n账户搜索: 3\t昵称搜索: 4\n");
+    int search_mode;
+    scanf("%d",&search_mode);
+
+    printf("请输入数据:");
+    char input[30];
+    scanf("%s",input);
+    printf("\n");
+
+    int flag = 0, is_find = 0;
+    for( int i=0; i<password_num; ++i ){
+        is_find = 0;
+        switch(search_mode){
+            case 1: { is_find = !strcmp(input,(char*)&(p->lnk)); break; }
+            case 2: { is_find = !strcmp(input,(char*)&(p->account)); break; }
+            case 3: { is_find = !strcmp(input,(char*)&(p->account_num)); break; }
+            case 4: { is_find = !strcmp(input,(char*)&(p->name)); break; }
+            default: printf("搜索模式不匹配\n\n");
+        }
+        if( is_find ){
+          show( p, i );
+          flag ++;
+        }
+        p++;
     }
-    p++;
-  }
-  if(flag){
-    printf("共找到%d条结果\n\n",flag);
-  }else{
-    printf("未找到结果\n\n");
-  }
+    if(flag){
+      printf("共找到%d条结果\n\n",flag);
+    }else{
+      printf("未找到结果\n\n");
+    }   
 }
 
 
-void search_by_zhanghao( char *input, Password *p, int nums ){
-  int flag = 0;
-  for( int i=0; i<nums; ++i ){
-    if( !strcmp(input,(char*)&(p->zhanghao)) ){
-      show( p, i );
-      flag ++;
+void change( Password *p ){
+    printf("请选择想要修改的账号\n");
+    char input[30];
+    scanf("%s",input);
+    int flag = 0;//是否找到
+    Password *q;//储存p
+    for( int i=0; i<password_num; ++i ){
+        if( !strcmp(input,(char*)&(p->account)) ){
+            show( p, i );
+            q = p;
+            flag ++;
+        }
+        p++;
     }
-    p++;
-  }
-  if(flag){
-    printf("共找到%d条结果\n\n",flag);
-  }else{
-    printf("未找到结果\n\n");
-  }
-}
 
-
-void search_by_zhanghu( char *input, Password *p, int nums ){
-  int flag = 0;
-  for( int i=0; i<nums; ++i ){
-    if( !strcmp(input,(char*)&(p->zhanghu)) ){
-      show( p, i );
-      flag ++;
+    if(flag){
+        printf("请选择要修改的内容:\n");
+        printf("账号: 1\t账户: 2\n昵称: 3\t密码: 4\n快捷方式: 5\n");
+        int mode;
+        scanf("%d",&mode);
+        printf("请输入修改后的内容:\n");
+        switch( mode ){
+            case 1: { scanf("%s",&(q->account)); break; }
+            case 2: { scanf("%s",&(q->account_num)); break; }
+            case 3: { scanf("%s",&(q->name)); break; }
+            case 4: { scanf("%s",&(q->pwd)); break; }
+            case 5: { scanf("%s",&(q->lnk)); break; }
+            default: { printf("非法输入!\n"); }
+        }
+        printf("修改完毕，记得保存哦~\n\n");
+    }else{
+        printf("未找到结果\n\n");
     }
-    p++;
-  }
-  if(flag){
-    printf("共找到%d条结果\n\n",flag);
-  }else{
-    printf("未找到结果\n\n");
-  }
+
 }
 
 
-void search_by_name( char *input, Password *p, int nums ){
-  int flag = 0;
-  for( int i=0; i<nums; ++i ){
-    if( !strcmp(input,(char*)&(p->name)) ){
-      show( p, i );
-      flag ++;
-    }
-    p++;
-  }
-  if(flag){
-    printf("共找到%d条结果\n\n",flag);
-  }else{
-    printf("未找到结果\n\n");
-  }
-}
-
-
-void search( Password *p, int nums ){
-  printf("请选择搜索类型:\n");
-  printf("快捷搜索: 1\t账号搜索: 2\n账户搜索: 3\t昵称搜索: 4\n");
-
-  int search_mode;
-  scanf("%d",&search_mode);
-  printf("请输入数据:");
-  char input[30];
-  scanf("%s",input);
-  printf("\n");
-
-  switch(search_mode){
-    case 1: { search_by_lnk( input, p, nums ); break; }
-    case 2: { search_by_zhanghao( input, p, nums ); break; }
-    case 3: { search_by_zhanghu( input, p, nums ); break; }
-    case 4: { search_by_name( input, p, nums ); break; }
-    default: printf("搜索模式不匹配\n\n");
-  }
-}
-
-
-void change( Password *p, int nums ){
-change_1:
-  printf("请选择想要修改的账号\n");
-  char input[30];
-  scanf("%s",input);
-  int flag = 0;//是否找到
-  Password *q;//储存p
-  for( int i=0; i<nums; ++i ){
-    if( !strcmp(input,(char*)&(p->zhanghao)) ){
-      show( p, i );
-      q = p;
-      flag ++;
-    }
-    p++;
-  }
-
-  if(!flag){
-    printf("未找到结果\n\n");
-    goto change_1;
-  }
-
-  printf("请选择要修改的内容:\n");
-  printf("账号: 1\t账户: 2\n昵称: 3\t密码: 4\n快捷方式: 5\n");
-
-  int mode;
-
-select_mode:
-
-  scanf("%d",&mode);
-  printf("请输入修改后的内容:\n");
-  switch( mode ){
-    case 1: { scanf("%s",&(q->zhanghao)); break; }
-    case 2: { scanf("%s",&(q->zhanghu)); break; }
-    case 3: { scanf("%s",&(q->name)); break; }
-    case 4: { scanf("%s",&(q->pwd)); break; }
-    case 5: { scanf("%s",&(q->lnk)); break; }
-    default: { printf("非法输入!\n请选择要修改的内容:\n"); goto select_mode; }
-  }
-  printf("修改完毕，记得保存哦~\n\n");
-}
-
-
-void my_delete( Password *p, int nums ){
-  del_1:
+void my_delete( Password *p ){
   printf("请选择想要删除的账号\n");
   char input[30];
   scanf("%s",input);
   int flag = 0;//是否找到
   Password *q;//储存p
-  for( int i=0; i<nums; ++i ){
-    if( !strcmp(input,(char*)&(p->zhanghao)) ){
+  for( int i=0; i<password_num; ++i ){
+    if( !strcmp(input,(char*)&(p->account)) ){
       show( p, i );
       q = p;
       flag ++;
@@ -241,39 +179,40 @@ void my_delete( Password *p, int nums ){
     p++;
   }
 
-  if(!flag){
+  if(flag){
+    strcpy(q->account,"todelete");
+    printf("删除完毕，记得保存哦~\n\n");
+  }else{
     printf("未找到结果\n\n");
-    goto del_1;
   }
-  strcpy(q->zhanghao,"todelete");
-
-  printf("删除完毕，记得保存哦~\n\n");
 }
 
 
 void password_panel( Password *p_pwd ){
-  show_operation();
-
-  Password *my_password = p_pwd;
-  char mode = 0;
-  while(1){
+    if(IsCls) system("cls");
+    printf("密码本: %s.txt\n", file_name);
     split_line();
-    // switch(Language)
-    printf("请选择操作:\n");
-
-    scanf("\n");
-    scanf("%c",&mode);
-    switch( mode ){
-      case '0': { /*printf("程序结束\n"); system("pause");*/ my_exit(); }
-      case '1': { list_all( my_password, file_num ); break; }
-      case '2': { search( my_password, file_num ); break;}
-      case '3': { new_password( my_password, file_num ); file_num++; break; }
-      case '4': { change( my_password, file_num ); break; }
-      case '5': { my_delete( my_password, file_num ); break; }
-      case '8': { save_file( my_password ); break; }
-      case '9': { show_operation(); break; }
-      case '-': { FILE *file = NULL; file_panel( file ); break; }
-      default:{ printf("新功能开发中~(反正就是你非法输入了hhh)\n\n"); }
-    } 
-  }
+    show_operation();
+    Password *my_password = p_pwd;
+    char mode = 0;
+    while(1){
+        fflush(stdin);
+        split_line();
+        // switch(Language)
+        printf("请选择操作:\n");
+        scanf("\n");
+        scanf("%c",&mode);
+        switch( mode ){
+            case '1': { list_all( my_password ); break; }
+            case '2': { search( my_password ); break;}
+            case '3': { new_password( my_password ); password_num++; break; }
+            case '4': { change( my_password ); break; }
+            case '5': { my_delete( my_password ); break; }
+            case '8': { save_file( my_password ); break; }
+            case '9': { show_operation(); break; }
+            case '0': { save_file( my_password ); my_exit(); break; }
+            case '-': { FILE *file = NULL; file_panel( file ); break; }
+            default:{ printf("新功能开发中~(反正就是你非法输入了hhh)\n\n"); }
+        } 
+    }
 }
