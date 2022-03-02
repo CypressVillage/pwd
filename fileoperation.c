@@ -9,8 +9,7 @@
 
 extern char file_path[MAX_FILE_PATH_LEN];
 extern char file_name[100];
-int file_num;
-
+int password_num; // the num include passwords to delete
 
 void dbg( char* tosay ){
     static int debugtime = 1;
@@ -23,21 +22,24 @@ void show_file_operation( void ){
     
     switch(Language){
         case 0:{
-            printf("文件列表: 1\t");
-            printf("选择文件: 2\t");
-            printf("新建文件: 3\n");
-            printf("删除文件: 5\t");
-            printf("查看操作: 9\t");
-            printf("退出系统: 0\n");
+            printf("1: 文件列表\t");
+            printf("2: 选择文件\t");
+            printf("3: 新建文件\n");
+            printf("5: 删除文件\t");
+            printf("8: 程序设置\t");
+            printf("9: 查看操作\n");
+            printf("0: 退出系统\n");
             break;
         }
         case 1:{
             printf("%-20s","1:list file");
             printf("%-20s","2:select file");
-            printf("%-20s","3:delete file");
+            printf("%-20s","3:create file");
             printf("\n");
-            printf("%-20s","5:new file");
+            printf("%-20s","5:delete file");
+            printf("%-20s","8:settings");
             printf("%-20s","9:show operation");
+            printf("\n");
             printf("%-20s","0:exit");
             printf("\n");
             break;
@@ -57,8 +59,8 @@ void my_exit( void ){
 
 void welcome( void ){
     switch (Language){
-        case 0: printf("欢迎使用 @pwd@ 密码系统~\n\n"); break;
-        case 1: printf("welcom to use @pwd@~\n\n"); break;
+        case 0: printf("欢迎使用 @pwd@ 密码系统~\n"); break;
+        case 1: printf("welcom to use @pwd@~\n"); break;
     }
 }
 
@@ -89,15 +91,34 @@ void list_file( void ){
 }
 
 
+void password_plus( void ){
+    printf("please enter your password:\n");
+    char *input = malloc( 100 * sizeof(char) );
+    scanf("%s", input);
+    if(strcmp( input, PasswordPlus ))
+        my_exit();
+}
+
+
+void change_password_plus( void ){
+    printf("please enter the new password:\n");
+    scanf("%s",PasswordPlus);
+}
+
+
+char *get_file_path( void ){
+    char *total_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
+    strcpy( total_path, file_path );
+    return total_path;
+}
+
+
 FILE *create_file( FILE *file ){
-    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
-    strcpy( f_path, file_path );
 
     printf("请输入文件名:");
     scanf("%s",file_name);
 
-    char *total_path = malloc( 200 * sizeof(char) );
-    total_path = (char*)strcat( strcat( f_path, file_name ), ".txt");
+    char *total_path = strcat( strcat( get_file_path(), file_name ), ".txt" );
 
     file=fopen( total_path , "w+" );
     printf("创建成功!\n");
@@ -110,11 +131,7 @@ void remove_file( void ){
     printf("请选择要删除的文件:\n");
     scanf("%s", file_name);
 
-    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
-    strcpy( f_path, file_path );
-
-    char *total_path = malloc( 200 * sizeof(char) );
-    total_path = (char*)strcat( strcat( f_path, file_name ), ".txt");
+    char *total_path = strcat( strcat( get_file_path(), file_name ), ".txt");
 
     if( !remove(total_path) ){
         // printf("file removed!\n");
@@ -137,16 +154,11 @@ void rename_file( void ){
 */
 FILE *select_file( FILE *file ){
 
-    // we can't change file_path
-    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
-    strcpy( f_path, file_path );
-
     // printf("please select file\n");
     printf("请选择文件:\n");
     scanf("%s",file_name);
 
-    char *total_path = malloc( 200 * sizeof(char) );
-    total_path = (char*)strcat( strcat( f_path, file_name ), ".txt");
+    char *total_path = strcat( strcat( get_file_path(), file_name ), ".txt");
 
     if( (file=fopen( total_path, "r+" )) == NULL ){
         printf("文件%s.txt不存在,是否创建? (y&n)\n", file_name);
@@ -178,42 +190,38 @@ Password *read_file( FILE *file ){
     int line_num = 1;//行号
     while( !feof(file) ){ 
         switch( line_num % 5 ){
-            case 1: {fscanf( file, "%s", ppwd->zhanghao ); break;}
-            case 2: {fscanf( file, "%s", ppwd->zhanghu ); break;}
+            case 1: {fscanf( file, "%s", ppwd->account ); break;}
+            case 2: {fscanf( file, "%s", ppwd->account_num ); break;}
             case 3: {fscanf( file, "%s", ppwd->name ); break;}
             case 4: {fscanf( file, "%s", ppwd->pwd ); break;}
             case 0: {fscanf( file, "%s", ppwd->lnk ); ppwd++; break;}
         }
         line_num ++;
     }
-    file_num = line_num/5;//已有密码条数
+    password_num = line_num/5;//已有密码条数
     fclose( file );
     return pwd;
 }
 
 
-// nums include to delete
 void save_file( Password *ppwd ){
-    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
-    strcpy( f_path, file_path );
 
-    char *total_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
-    total_path = (char*)strcat( strcat( f_path, file_name ), ".txt");
+    char *total_path = strcat( strcat( get_file_path(), file_name ), ".txt");
     FILE *file = fopen( total_path, "w" );
 
-    int f_num = file_num, line_num = 1;
+    int f_num = password_num, line_num = 1;
     while( f_num ){
 
         // delete
-        if( !strcmp( ppwd->zhanghao, "todelete" ) ){
+        if( !strcmp( ppwd->account, "todelete" ) ){
             ppwd ++;
             f_num --;
             continue;
         }
 
         switch( line_num % 5 ){
-          case 1: {fprintf( file, "%s\n", ppwd->zhanghao ); break;}
-          case 2: {fprintf( file, "%s\n", ppwd->zhanghu ); break;}
+          case 1: {fprintf( file, "%s\n", ppwd->account ); break;}
+          case 2: {fprintf( file, "%s\n", ppwd->account_num ); break;}
           case 3: {fprintf( file, "%s\n", ppwd->name ); break;}
           case 4: {fprintf( file, "%s\n", ppwd->pwd ); break;}
           case 0: {fprintf( file, "%s\n", ppwd->lnk ); ppwd ++; f_num--; break;}
@@ -228,11 +236,14 @@ void save_file( Password *ppwd ){
 
 
 FILE *file_panel( FILE *file ){
+    if(IsCls) system("cls");
+    welcome();
     split_line();
     show_file_operation();
     
     int mode = 0;
     while(1){
+        fflush(stdin);
         split_line();
         // printf("please select mode:\n");
         printf("请选择操作:\n");
@@ -241,9 +252,7 @@ FILE *file_panel( FILE *file ){
         switch ( mode ){
             case 1: { list_file(); break;}
             case 2: {
-                do{
-                    file = select_file( file );
-                }while( file == NULL );
+                file = select_file( file );
                 Password *p = read_file(file);
                 password_panel( p );
                 break;
@@ -252,8 +261,10 @@ FILE *file_panel( FILE *file ){
                 file = create_file(file);
                 Password *p = read_file(file);
                 password_panel( p );
+                break;
             }
             case 5: {remove_file(); break;}
+            case 8: {ConfigList *cp = read_config(); config_panel(cp); break;}
             case 9: {show_file_operation(); break;}
             case 0: {my_exit(); break;}
             default:{printf("undefined mode\n"); break;}
