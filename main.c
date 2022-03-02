@@ -12,8 +12,10 @@ int main(){
 
     ConfigList *cp = read_config();
     set_config(cp);
+    free(cp);
 
-    welcome();
+    if(IsEnablePasswordPlus) password_plus();
+
     FILE *file = NULL;
     file_panel(file);
  
