@@ -253,6 +253,7 @@ FILE *file_panel( FILE *file ){
             case 1: { list_file(); break;}
             case 2: {
                 file = select_file( file );
+                if(file==NULL) break;
                 Password *p = read_file(file);
                 password_panel( p );
                 break;
