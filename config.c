@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "config.h"
 #include "fileoperation.h"
+#include "language.h"
 
 /*******************************/
 /*
@@ -11,12 +12,14 @@
 */
 char file_path[MAX_FILE_PATH_LEN] = "D://zbc//biancheng//Environment//my_environment//pwd//";
 char file_name[100] = "pwd_data";
+char temp_path[MAX_FILE_PATH_LEN] = "D://zbc//Desktop//";
 char *PasswordPlus = "1";
 int IsEnablePasswordPlus = 0;
 int Language = 0;
 char *SplitLineStyle = "---";
 int IsDeveloperMode = 0;
 int IsCls = 0;
+int IsShowPassword = 1;
 /*******************************/
 
 void show_config_operation( void ){
@@ -51,13 +54,26 @@ void show_config_operation( void ){
 
 void show_all_config(void){
     printf("语言:");
-    if(Language){printf("英文\n");} else{printf("中文\n");}
+    if(Language) printf("英文\n");
+    else{printf("中文\n");}
+
     printf("分割线样式:");
     if(!strcmp(SplitLineStyle, "---")) printf("---\n");
     if(!strcmp(SplitLineStyle, "num")) printf("数字\n");
+
+    printf("二级密码:");
+    if(IsEnablePasswordPlus) printf("开启\n"); 
+    else printf("关闭\n");
+
+    printf("显示密码:");
+    if(IsShowPassword) printf("是\n");
+    else printf("否\n");
 }
 
 
+/*
+* read config from config.pwd to create a config list
+*/
 ConfigList *read_config( void ){
 
     char *total_path = strcat( get_file_path(), "config.pwd" );
@@ -92,7 +108,11 @@ ConfigList *read_config( void ){
 
 
 void list_config( ConfigList *cp ){
-    while(cp!=NULL){
+    /*
+    * it shoud be cp, but because of there has an extra 
+    * line below the config.pwd, exit a little more
+    */
+    while(cp->next!=NULL){
         printf("%s:", cp->config);
         printf("%s\n", cp->mode);
         cp = cp->next;
@@ -103,6 +123,17 @@ void list_config( ConfigList *cp ){
 void set_config( ConfigList *cp ){
     while(cp!=NULL){
         /*****************************************************************************/
+        if( !strcmp(cp->config, "TempPath") ){
+            strcpy( temp_path, cp->mode );
+        }
+        if( !strcmp(cp->config, "PasswordPlus") ){
+            PasswordPlus = malloc( 100 * sizeof(char) );
+            strcpy( PasswordPlus, cp->mode );
+        }
+        if( !strcmp(cp->config, "IsEnablePasswordPlus") ){
+            if( !strcmp(cp->mode,"false") ) IsEnablePasswordPlus = 0;
+            if( !strcmp(cp->mode,"true") ) IsEnablePasswordPlus = 1;
+        }
         if( !strcmp(cp->config, "Language") ){
             if( !strcmp(cp->mode,"Chinese") ) Language = 0;
             if( !strcmp(cp->mode,"English") ) Language = 1;
@@ -111,17 +142,17 @@ void set_config( ConfigList *cp ){
             if( !strcmp(cp->mode,"---") ) SplitLineStyle = "---";
             if( !strcmp(cp->mode,"Number") ) SplitLineStyle = "num";
         }
-        if( !strcmp(cp->config, "IsEnablePasswordPlus") ){
-            if( !strcmp(cp->mode,"false") ) IsEnablePasswordPlus = 0;
-            if( !strcmp(cp->mode,"true") ) IsEnablePasswordPlus = 1;
-        }
-        if( !strcmp(cp->config, "PasswordPlus") ){
-            PasswordPlus = malloc( 100 * sizeof(char) );
-            strcpy( PasswordPlus, cp->mode );
+        if( !strcmp(cp->config, "IsDeveloperMode") ){
+            if( !strcmp(cp->mode,"false") ) IsDeveloperMode = 0;
+            if( !strcmp(cp->mode,"true") ) IsDeveloperMode = 1;
         }
         if( !strcmp(cp->config, "IsCls") ){
             if( !strcmp(cp->mode,"false") ) IsCls = 0;
             if( !strcmp(cp->mode,"true") ) IsCls = 1;
+        }
+        if( !strcmp(cp->config, "IsShowPassword") ){
+            if( !strcmp(cp->mode,"false") ) IsShowPassword = 0;
+            if( !strcmp(cp->mode,"true") ) IsShowPassword = 1;
         }
         /*****************************************************************************/
         cp = cp->next;
@@ -158,7 +189,7 @@ void save_config( ConfigList *cp ){
     FILE *file = fopen( total_path, "w" );
 
     int line_num = 1;
-    while( cp!=NULL ){
+    while( cp->next!=NULL ){
 
         switch( line_num % 2 ){
             case 1: {fprintf( file, "%s\n", cp->config ); break;}
