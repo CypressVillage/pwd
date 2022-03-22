@@ -1,9 +1,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <windows.h>
 #include "password.h"
 #include "fileoperation.h"
 #include "config.h"
+#include "language.h"
 
 extern int password_num;
 
@@ -46,7 +48,11 @@ void show( Password *p, int i ){
       printf("账号%d:%s\n",i+1,p->account);
       printf("账户:%s\n",p->account_num);
       printf("昵称:%s\n",p->name);
-      printf("密码:%s\n",p->pwd);
+      if(IsShowPassword){
+        printf("密码:%s\n",p->pwd);
+      }else{
+        printf("密码:**********\n");
+      }
       printf("快捷方式:%s\n\n",p->lnk);
       break;
     }
@@ -54,7 +60,11 @@ void show( Password *p, int i ){
       printf("account %d:%s\n",i+1,p->account);
       printf("account number:%s\n",p->account_num);
       printf("name:%s\n",p->name);
-      printf("password:%s\n",p->pwd);
+      if(IsShowPassword){
+        printf("password:%s\n",p->pwd);
+      }else{
+        printf("password:**********\n");
+      }
       printf("lnk:%s\n\n",p->lnk);
       break;
     }
@@ -73,32 +83,32 @@ void list_all( Password *p ){
 
 void new_password( Password *p ){
   
-  printf("请输入账号:");
-  scanf("%s",&((p+password_num)->account));
+    language_1_new_password("请输入账号:",1);
+    scanf("%s",&((p+password_num)->account));
 
-  printf("请输入账户:");
-  scanf("%s",&((p+password_num)->account_num));
+    language_1_new_password("请输入账户:",2);
+    scanf("%s",&((p+password_num)->account_num));   
 
-  printf("请输入昵称:");
-  scanf("%s",&((p+password_num)->name));
+    language_1_new_password("请输入昵称:",3);
+    scanf("%s",&((p+password_num)->name));  
 
-  printf("请输入密码:");
-  scanf("%s",&((p+password_num)->pwd));
+    language_1_new_password("请输入密码:",4);
+    scanf("%s",&((p+password_num)->pwd));   
 
-  printf("请输入快捷数字:");
-  scanf("%s",&((p+password_num)->lnk));
-
-  printf("创建完成，记得保存哦~\n\n");
+    language_1_new_password("请输入快捷数字:",5);
+    scanf("%s",&((p+password_num)->lnk));   
+    
+    language_1_new_password("创建完成，记得保存哦~\n\n",6);
 }
 
 
 void search( Password *p ){
-    printf("请选择搜索类型:\n");
-    printf("快捷搜索: 1\t账号搜索: 2\n账户搜索: 3\t昵称搜索: 4\n");
+    language_1_search("请选择搜索类型:\n",1);
+    language_1_search("快捷搜索: 1\t账号搜索: 2\n账户搜索: 3\t昵称搜索: 4\n",2);
     int search_mode;
     scanf("%d",&search_mode);
 
-    printf("请输入数据:");
+    language_1_search("请输入数据:",3);
     char input[30];
     scanf("%s",input);
     printf("\n");
@@ -120,9 +130,9 @@ void search( Password *p ){
         p++;
     }
     if(flag){
-      printf("共找到%d条结果\n\n",flag);
+        printf("共找到%d条结果\n\n",flag);
     }else{
-      printf("未找到结果\n\n");
+        printf("未找到结果\n\n");
     }   
 }
 
@@ -165,26 +175,44 @@ void change( Password *p ){
 
 
 void my_delete( Password *p ){
-  printf("请选择想要删除的账号\n");
-  char input[30];
-  scanf("%s",input);
-  int flag = 0;//是否找到
-  Password *q;//储存p
-  for( int i=0; i<password_num; ++i ){
-    if( !strcmp(input,(char*)&(p->account)) ){
-      show( p, i );
-      q = p;
-      flag ++;
+    printf("请选择想要删除的账号\n");
+    char input[30];
+    scanf("%s",input);
+    int flag = 0;//是否找到
+    Password *q;//储存p
+    for( int i=0; i<password_num; ++i ){
+        if( !strcmp(input,(char*)&(p->account)) ){
+            show( p, i );
+            q = p;
+            flag ++;
+        }
+        p++;
     }
-    p++;
-  }
 
-  if(flag){
-    strcpy(q->account,"todelete");
-    printf("删除完毕，记得保存哦~\n\n");
-  }else{
-    printf("未找到结果\n\n");
-  }
+    if(flag){
+        strcpy(q->account,"todelete");
+        printf("删除完毕，记得保存哦~\n\n");
+    }else{
+        printf("未找到结果\n\n");
+    }
+}
+
+
+int addPasswordIntoClipboard( int pwdnum, Password *p ){
+  int contentSize = strlen(p[pwdnum-1].pwd) + 1;
+  HGLOBAL hMemory;
+  LPTSTR lpMemory;
+  if(!OpenClipboard(NULL)) return 0;
+  if(!EmptyClipboard()) return 0;
+  if(!(hMemory = GlobalAlloc(GMEM_MOVEABLE, contentSize))) return 0;
+  if(!(lpMemory = (LPTSTR)GlobalLock(hMemory))) return 0;
+  memcpy_s(lpMemory, contentSize, p[pwdnum-1].pwd, contentSize);
+  GlobalUnlock(hMemory);
+  if(!SetClipboardData(CF_TEXT, hMemory)) return 0;
+  CloseClipboard();
+  if(Language==0) printf("password copied\n");
+  if(Language==1) printf("已复制\n");
+  return 1;
 }
 
 
@@ -212,6 +240,7 @@ void password_panel( Password *p_pwd ){
             case '9': { show_operation(); break; }
             case '0': { save_file( my_password ); my_exit(); break; }
             case '-': { FILE *file = NULL; file_panel( file ); break; }
+            case 'c': { addPasswordIntoClipboard(getchar()-'0', my_password); break; }
             default:{ printf("新功能开发中~(反正就是你非法输入了hhh)\n\n"); }
         } 
     }
