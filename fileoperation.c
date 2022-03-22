@@ -24,11 +24,15 @@ void show_file_operation( void ){
         case 0:{
             printf("1: 文件列表\t");
             printf("2: 选择文件\t");
-            printf("3: 新建文件\n");
+            printf("3: 新建文件\t");
+            printf("\n");
+            printf("4: 文件更名\t");
             printf("5: 删除文件\t");
             printf("8: 程序设置\t");
-            printf("9: 查看操作\n");
-            printf("0: 退出系统\n");
+            printf("\n");
+            printf("9: 查看操作\t");
+            printf("0: 退出系统\t");
+            printf("\n");
             break;
         }
         case 1:{
@@ -68,9 +72,7 @@ void welcome( void ){
 void list_file( void ){
     printf("\n");
 
-    char *f_path = malloc( MAX_FILE_PATH_LEN * sizeof(char) );
-    strcpy( f_path, file_path );
-    f_path = strcat( f_path, "*.txt" );
+    char *f_path = strcat( get_file_path(), "*.txt" );
     // system("for &i in (*.txt) do echo &i");
     __int64 Handle;
     int txt_num = 1;
@@ -144,7 +146,23 @@ void remove_file( void ){
 
 
 void rename_file( void ){
-//////////////////////////////////////////////////////////////////////////
+    // printf("please input the filename youwant to remove:\n");
+    printf("请选择要更改的文件:\n");
+    char *total_path = strcat( strcat( get_file_path(), file_name ), ".txt");
+    scanf("%s", file_name);
+
+    printf("请选择新的文件名:\n");
+    char *name_to_change = malloc(_MAX_FNAME);
+    scanf("%s", name_to_change);
+    char *new_file_path = strcat( strcat( get_file_path(), name_to_change ), ".txt");
+
+    if( !rename(total_path, new_file_path) ){
+        // printf("file changed!\n");
+        printf("更改成功!\n");
+    }else{
+        // printf("file not exit\n");
+        printf("文件不存在\n");
+    }
 }
 
 
@@ -264,6 +282,7 @@ FILE *file_panel( FILE *file ){
                 password_panel( p );
                 break;
             }
+            case 4: {rename_file(); break;}
             case 5: {remove_file(); break;}
             case 8: {ConfigList *cp = read_config(); config_panel(cp); break;}
             case 9: {show_file_operation(); break;}
