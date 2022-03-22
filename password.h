@@ -19,6 +19,7 @@
   void change( Password *p );
   void my_delete( Password *p );
   void search( Password *p );
+  int addPasswordIntoClipboard( int pwdnum, Password *p );
   void password_panel( Password *p_pwd );
 
 #endif
