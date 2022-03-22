@@ -5,16 +5,18 @@
     #define MAX_CONFIG_LENGTH 50
     #define MAX_FILE_PATH_LEN 100
 
-
-    /*config list*/
     extern char file_path[MAX_FILE_PATH_LEN];
     extern char file_name[100];
+
+    /*config list*/
+    extern char temp_path[MAX_FILE_PATH_LEN];
     extern char *PasswordPlus;
     extern int IsEnablePasswordPlus;
     extern int Language;
     extern char *SplitLineStyle;
     extern int IsDeveloperMode;
     extern int IsCls;
+    extern int IsShowPassword;
 
     typedef struct configList{
         char config[MAX_CONFIG_LENGTH];
