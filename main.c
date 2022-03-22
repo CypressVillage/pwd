@@ -5,7 +5,7 @@
 #define DEBUG 0
 
 
-// gcc main.c password.c password.h fileoperation.h fileoperation.c config.h config.c
+// gcc main.c password.c password.h fileoperation.h fileoperation.c config.h config.c language.h language.c
 int main(){
     system("chcp 65001 > nul");
     system("title pwd");
